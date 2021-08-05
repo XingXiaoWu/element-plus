@@ -87,6 +87,8 @@ import { useDragNodeEmitter } from './model/useDragNode'
 import Node from './model/node'
 import { TreeOptionProps, TreeNodeData, RootTreeType } from './tree.type'
 
+type Nullable<T> = null | T
+
 export default defineComponent({
   name: 'ElTreeNode',
   components: {
@@ -103,6 +105,7 @@ export default defineComponent({
       type: Object as PropType<TreeOptionProps>,
       default: () => ({}),
     },
+    accordion: Boolean,
     renderContent: Function,
     renderAfterExpand: Boolean,
     showCheckbox: {
