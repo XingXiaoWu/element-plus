@@ -1,28 +1,27 @@
-import ResizeObserver from 'resize-observer-polyfill'
 import isServer from './isServer'
 
-export type ResizableElement = CustomizedHTMLElement<{
-  __resizeListeners__: Array<(...args: unknown[]) => unknown>
-  __ro__: ResizeObserver
-}>;
+import type { CustomizedHTMLElement } from './types'
 
-/* istanbul ignore next */
-const resizeHandler = function(entries: ResizeObserverEntry[]) {
+export type ResizableElement = CustomizedHTMLElement<{
+  __resizeListeners__?: Array<(...args: unknown[]) => unknown>
+  __ro__?: ResizeObserver
+}>
+
+const resizeHandler = function (entries: ResizeObserverEntry[]) {
   for (const entry of entries) {
     const listeners =
       (entry.target as ResizableElement).__resizeListeners__ || []
     if (listeners.length) {
-      listeners.forEach(fn => {
+      listeners.forEach((fn) => {
         fn()
       })
     }
   }
 }
 
-/* istanbul ignore next */
-export const addResizeListener = function(
+export const addResizeListener = function (
   element: ResizableElement,
-  fn: (...args: unknown[]) => unknown,
+  fn: (...args: unknown[]) => unknown
 ): void {
   if (isServer || !element) return
   if (!element.__resizeListeners__) {
@@ -33,17 +32,13 @@ export const addResizeListener = function(
   element.__resizeListeners__.push(fn)
 }
 
-/* istanbul ignore next */
-export const removeResizeListener = function(
+export const removeResizeListener = function (
   element: ResizableElement,
-  fn: (...args: unknown[]) => unknown,
+  fn: (...args: unknown[]) => unknown
 ): void {
   if (!element || !element.__resizeListeners__) return
-  element.__resizeListeners__.splice(
-    element.__resizeListeners__.indexOf(fn),
-    1,
-  )
+  element.__resizeListeners__.splice(element.__resizeListeners__.indexOf(fn), 1)
   if (!element.__resizeListeners__.length) {
-    element.__ro__.disconnect()
+    element.__ro__?.disconnect()
   }
 }
